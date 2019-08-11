@@ -94,7 +94,7 @@ namespace ConsoleApp1
             Console.WriteLine(ToBinaryString((int)WindDirection.South));
             Console.WriteLine(ToBinaryString((int)WindDirection.West));
 
-            WindDirection wd = WindDirection.East | WindDirection.North;
+            WindDirection wd = WindDirection.East | WindDirection.North | WindDirection.West;
             Console.WriteLine(ToBinaryString((int)wd));
             Console.WriteLine(wd);
 
