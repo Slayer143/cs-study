@@ -8,36 +8,37 @@ namespace homework_07_part_01
         {
             bool process = true;
             int wordsCounter = 0;
+            int aCounter = 0;
+            string inputString = null;
 
             while (process)
             {
-                Console.WriteLine("Enter string that contains more that one word");
+                Console.WriteLine("Enter string that contains more that one word. You can have only one ' ' symbol between words");
                 try
                 {
-                    string inputString = Console.ReadLine();
+                    inputString = Console.ReadLine();
 
-                    for (int i = 0; i < inputString.Length; i++)
+                    string[] words = inputString.Split(' ');
+
+                    foreach (string word in words)
                     {
-                        if (string.IsNullOrWhiteSpace(inputString) == false 
-                            && inputString[i] == ' ')
-                        {
-                            wordsCounter++;
-
-                            if (inputString[i] == ' ' 
-                                && inputString[i++] == ' ')
-                            {
-                                wordsCounter--;
-                            }
-                        }
-
+                        if (word[0] != ' ') wordsCounter++;
+                        if (word[0] == 'A' || word[0] == 'a') aCounter++;
                     }
 
-                    if (wordsCounter >= 1) process = false;
-                    else Console.WriteLine("You should input more than one word");
+                    if (wordsCounter > 1)
+                    {
+                        process = false;
+                        Console.WriteLine(aCounter);
+
+                    }
                 }
                 catch
                 {
-
+                    if (string.IsNullOrWhiteSpace(inputString) == true || string.IsNullOrEmpty(inputString) == true)
+                    {
+                        throw new Exception("String was empty.");
+                    }
                 }
             }
         }
