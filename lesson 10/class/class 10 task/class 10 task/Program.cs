@@ -9,7 +9,7 @@ namespace class_10_task
 			var pet1 = new Pet();
 			pet1.PetKind = Pet.Kind.Dog;
 			pet1.Age = 1;
-			pet1.Name = "Jonh";
+			pet1.Name = "John";
 			pet1.Sex = 'M';
 			pet1.SetBirthPlace("London");
 
