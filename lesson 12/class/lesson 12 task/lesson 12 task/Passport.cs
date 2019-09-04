@@ -15,7 +15,7 @@ namespace lesson_12_task
 			{
 				return base.PropertiesString +
 					$"Country: {Country}\n" +
-					$"Person name: {PersonName}";
+					$"Person name: {PersonName}\n";
 
 			}
 		}
@@ -25,6 +25,11 @@ namespace lesson_12_task
 		{
 			Country = country;
 			PersonName = personName;
+		}
+
+		public void ChangeIssueDate(DateTimeOffset newIssueDate)
+		{
+			IssueDate = newIssueDate;
 		}
 	}
 }
