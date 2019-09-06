@@ -15,23 +15,40 @@ namespace homework_08
             Console.WriteLine("Enter string with parentheses");
             inputString = Console.ReadLine();
 
-            foreach (char letter in inputString)         
-                    inputQueue.Enqueue(letter);
+            foreach (char letter in inputString)
+                inputQueue.Enqueue(letter);
 
-            foreach (char letter in inputQueue)
+            while (inputQueue.Count > 0)
             {
-                if (letter.Equals('{') == true)
-                    parenthesesCounter++;
-                else if (letter.Equals('[') == true)
-                    parenthesesCounter += 2;
-                else if (letter.Equals('(') == true)
-                    parenthesesCounter += 3;
-                else if (letter.Equals('}') == true)
-                    parenthesesCounter--;
-                else if (letter.Equals(']') == true)
-                    parenthesesCounter -= 2;
-                else if (letter.Equals(')') == true)
-                    parenthesesCounter -= 3;
+                var letter = inputQueue.Dequeue();
+
+                switch (letter)
+                {
+                    case '{':
+                        if (inputQueue.Peek() == ']' || inputQueue.Peek() == ')')
+                            throw new Exception("Incorrect string");
+                        break;
+                    case '[':
+                        if (inputQueue.Peek() == '}' || inputQueue.Peek() == ')')
+                            throw new Exception("Incorrect string");
+                        break;
+                    case '(':
+                        if (inputQueue.Peek() == ']' || inputQueue.Peek() == '}')
+                            throw new Exception("Incorrect string");
+                        break;
+                }
+                    if (letter.Equals('{'))
+                        parenthesesCounter++;
+                    if (letter.Equals('['))
+                        parenthesesCounter += 2;
+                    if (letter.Equals('('))
+                        parenthesesCounter += 3;
+                    if (letter.Equals('}'))
+                        parenthesesCounter--;
+                    if (letter.Equals(']'))
+                        parenthesesCounter -= 2;
+                    if (letter.Equals(')'))
+                        parenthesesCounter -= 3;
             }
 
             if (parenthesesCounter != 0)
