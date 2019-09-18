@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "class 16 delegat", "class 16 delegat\class 16 delegat.csproj", "{C3738BB5-1AC2-401D-9CC0-B5CF84BC7091}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometricFigures", "GeometricFigures\GeometricFigures.csproj", "{C8165CC0-0DAB-47F6-A151-CE47B3585ACD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorOperation", "CalculatorOperation\CalculatorOperation.csproj", "{B427901C-F115-4A97-BCE8-D2E421E41EFC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3738BB5-1AC2-401D-9CC0-B5CF84BC7091}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3738BB5-1AC2-401D-9CC0-B5CF84BC7091}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3738BB5-1AC2-401D-9CC0-B5CF84BC7091}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3738BB5-1AC2-401D-9CC0-B5CF84BC7091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8165CC0-0DAB-47F6-A151-CE47B3585ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8165CC0-0DAB-47F6-A151-CE47B3585ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8165CC0-0DAB-47F6-A151-CE47B3585ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8165CC0-0DAB-47F6-A151-CE47B3585ACD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B427901C-F115-4A97-BCE8-D2E421E41EFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B427901C-F115-4A97-BCE8-D2E421E41EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B427901C-F115-4A97-BCE8-D2E421E41EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B427901C-F115-4A97-BCE8-D2E421E41EFC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {524250F5-33E5-4957-9B97-D6DA16B2347A}
+	EndGlobalSection
+EndGlobal
