@@ -28,7 +28,7 @@ namespace Reminder.Domain
             TimeSpan awaitingRemindersCheckingPeriod,
             TimeSpan readyRemindersSendingPeriod)
         {
-            storage = _storage;
+            _storage = storage;
             _awaitingRemindersCheckingPeriod = awaitingRemindersCheckingPeriod;
             _readyRemindersSendingPeriod = readyRemindersSendingPeriod;
         }
