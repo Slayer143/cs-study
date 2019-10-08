@@ -7,15 +7,15 @@ namespace Reminder.Domain
 {
     public class ReminderDomain : IDisposable
     {
-        private IReminderStorage _storage;
+        internal IReminderStorage _storage;
 
-        private TimeSpan _awaitingRemindersCheckingPeriod;
+        internal TimeSpan _awaitingRemindersCheckingPeriod;
 
-        private TimeSpan _readyRemindersSendingPeriod;
+        internal TimeSpan _readyRemindersSendingPeriod;
 
-        private Timer _awaitingRemindersCheckingTimer;
+        internal Timer _awaitingRemindersCheckingTimer;
 
-        private Timer _readyRemindersCheckingTimer;
+        internal Timer _readyRemindersCheckingTimer;
 
         public Action<ReminderItem> SendReminder { get; set; }
 
@@ -53,7 +53,7 @@ namespace Reminder.Domain
                 _readyRemindersSendingPeriod);
         }
 
-        private void CheckAwaitingReminders(object state)
+        internal void CheckAwaitingReminders(object state)
         {
             // here will check storage for awaiting items 
             // check each for it`s date
@@ -68,12 +68,12 @@ namespace Reminder.Domain
             }
         }
 
-        private void SendReadyReminders(object state)
+        internal void SendReadyReminders(object state)
         {
             // find ready reminders
             // try "send"
             // if success update status to Sent
-            // else update statud to Failed
+            // else update status to Failed
             var readyReminders = _storage.Get(ReminderItemStatus.Ready);
 
             foreach (var readyReminder in readyReminders)
