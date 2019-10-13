@@ -33,13 +33,56 @@ namespace lesson_22.Controllers
 			return Ok(city);
 		}
 
-		[HttpPost("/api/cities/")]
-		public IActionResult AddCity([FromBody] City city)
-		{
-			var citiesDataStore = CitiesDataStore.GetInstance();
-			citiesDataStore.Cities.Add(city);
+        [HttpPost("/api/cities/")]
+        public IActionResult AddCity([FromBody] CityCreateModel city)
+        {
+            var citiesDataStore = CitiesDataStore.GetInstance();
+            int newCityId = citiesDataStore.Cities.Count() + 1;
 
-			return Created("/api/cities/" + city.Id, city);
+            var newCity = new CityGetModel
+            {
+                Id = newCityId,
+                Name = city.Name,
+                Description = city.Description,
+                NumberOfPointsOfInterest = city.NumberOfPointsOfInterest
+            };
+            citiesDataStore.Cities.Add(newCity);
+
+			return CreatedAtRoute("/api/cities/", new { id = newCityId }, newCity);
 		}
-	}
+
+        [HttpDelete("/api/cities/{id}")]
+        public IActionResult DeleteCity(int id)
+        {
+            var citiesDataStore = CitiesDataStore.GetInstance();
+
+            foreach (var cities in citiesDataStore.Cities)
+            {
+                if (cities.Id > id)
+                    cities.Id--;
+            }
+
+            citiesDataStore.Cities.Remove(citiesDataStore
+            .Cities
+            .FirstOrDefault(c => c.Id == id));
+
+            return Ok(citiesDataStore.Cities);
+        }
+
+        [HttpPut("/api/cities/{id}")]
+        public IActionResult ReplaceCity(int id, [FromBody] CityCreateModel cityModel)
+        {
+            var citiesDataStore = CitiesDataStore.GetInstance();
+
+            citiesDataStore.Cities[citiesDataStore.Cities.FindIndex(c => c.Id == id)] = new CityGetModel
+            {
+                Id = id,
+                Name = cityModel.Name,
+                Description = cityModel.Description,
+                NumberOfPointsOfInterest = cityModel.NumberOfPointsOfInterest
+            };
+
+            return Ok(citiesDataStore.Cities);
+        }
+    }
 }

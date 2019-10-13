@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace lesson_22.Models
 {
-	public class City
+	public class CityGetModel
 	{
 		public int Id { get; set; }
 
