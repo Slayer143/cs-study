@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace lesson_22.Models
 {
-    public class CityCreateModel
+    public class CityCreateOrUpdateModel
     {
         public string Name { get; set; }
 

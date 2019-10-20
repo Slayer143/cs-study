@@ -8,38 +8,38 @@ using System.Threading.Tasks;
 
 namespace lesson_22.Controllers
 {
-	public class CitiesController : Controller
-	{
-		[HttpGet("/api/cities")]
-		public IActionResult GetCities()
-		{
-			var citiesDataStore = CitiesDataStore.GetInstance();
-			var cities = citiesDataStore.Cities;
-			return Ok(cities);
-		}
-
-		[HttpGet("/api/cities/{id}")]
-		public IActionResult GetCity(int id)
-		{
-			var citiesDataStore = CitiesDataStore.GetInstance();
-
-			var city = citiesDataStore
-				.Cities
-				.FirstOrDefault(c => c.Id == id);
-
-			if (city == null)
-				return NotFound();
-
-			return Ok(city);
-		}
-
-        [HttpPost("/api/cities/")]
-        public IActionResult AddCity([FromBody] CityCreateModel city)
+    public class CitiesController : Controller
+    {
+        [HttpGet("/api/cities")]
+        public IActionResult GetCities()
         {
             var citiesDataStore = CitiesDataStore.GetInstance();
-            int newCityId = citiesDataStore.Cities.Count() + 1;
+            city cities = citiesDataStore.Cities;
+            return Ok(cities);
+        }
 
-            var newCity = new CityGetModel
+        [HttpGet("/api/cities/{id}")]
+        public IActionResult GetCity(int id)
+        {
+            var citiesDataStore = CitiesDataStore.GetInstance();
+
+            var city = citiesDataStore
+                .Cities
+                .FirstOrDefault(c => c.Id == id);
+
+            if (city == null)
+                return NotFound();
+
+            return Ok(city);
+        }
+
+        [HttpPost("/api/cities/")]
+        public IActionResult AddCity([FromBody] CityCreateOrUpdateModel city)
+        {
+            var citiesDataStore = CitiesDataStore.GetInstance();
+            int newCityId = citiesDataStore.Cities.Max(id => id.Id) + 1;
+
+            var newCity = new City
             {
                 Id = newCityId,
                 Name = city.Name,
@@ -48,41 +48,41 @@ namespace lesson_22.Controllers
             };
             citiesDataStore.Cities.Add(newCity);
 
-			return CreatedAtRoute("/api/cities/", new { id = newCityId }, newCity);
-		}
+            return CreatedAtRoute("/api/cities/", new { id = newCityId }, newCity);
+        }
 
         [HttpDelete("/api/cities/{id}")]
         public IActionResult DeleteCity(int id)
         {
             var citiesDataStore = CitiesDataStore.GetInstance();
 
-            foreach (var cities in citiesDataStore.Cities)
-            {
-                if (cities.Id > id)
-                    cities.Id--;
-            }
-
             citiesDataStore.Cities.Remove(citiesDataStore
             .Cities
             .FirstOrDefault(c => c.Id == id));
 
-            return Ok(citiesDataStore.Cities);
+            return NoContent();
         }
 
         [HttpPut("/api/cities/{id}")]
-        public IActionResult ReplaceCity(int id, [FromBody] CityCreateModel cityModel)
+        public IActionResult ReplaceCity(int id, [FromBody] CityCreateOrUpdateModel cityModel)
         {
             var citiesDataStore = CitiesDataStore.GetInstance();
 
-            citiesDataStore.Cities[citiesDataStore.Cities.FindIndex(c => c.Id == id)] = new CityGetModel
+            if (citiesDataStore.Cities[citiesDataStore.Cities.FindIndex(c => c.Id == id)] != null)
             {
-                Id = id,
-                Name = cityModel.Name,
-                Description = cityModel.Description,
-                NumberOfPointsOfInterest = cityModel.NumberOfPointsOfInterest
-            };
+                citiesDataStore.Cities[citiesDataStore.Cities.FindIndex(c => c.Id == id)] = new City
+                {
+                    Id = id,
+                    Name = cityModel.Name,
+                    Description = cityModel.Description,
+                    NumberOfPointsOfInterest = cityModel.NumberOfPointsOfInterest
+                };
 
-            return Ok(citiesDataStore.Cities);
+                return Ok(GetCity(id));
+            }
+            else
+                return NotFound();
+
         }
     }
 }

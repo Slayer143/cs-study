@@ -10,21 +10,21 @@ namespace lesson_22.DataStore
 	{
 		private static CitiesDataStore _citiesDataStore;
 
-		public List<CityGetModel> Cities { get; }
+		public List<City> Cities { get; }
 
 		private CitiesDataStore()
 		{
-			Cities = new List<CityGetModel>
+			Cities = new List<City>
 			{
-				new CityGetModel
-				{
+				new City
+                {
 					Id = 1,
 					Name = "New-York",
 					Description = "This is my favorite city",
 					NumberOfPointsOfInterest = 100
 				},
-				new CityGetModel
-				{
+				new City
+                {
 					Id = 2,
 					Name = "Amsterdam",
 					Description = "I ❤ Amster",
