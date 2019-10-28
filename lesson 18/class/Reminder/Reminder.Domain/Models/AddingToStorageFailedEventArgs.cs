@@ -1,16 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Reminder.Storage.Core;
 
 namespace Reminder.Domain.Models
 {
-    public class AddingToStorageFailedEventArgs
+    public class AddingToStorageFailedEventArgs : EventArgs
     {
-        public string ContactId { get; set; }
+		public Guid Id { get; set; }
 
-        public string Message { get; set; }
+		public DateTimeOffset Date { get; set; }
 
-        public Exception AddingException { get; set; }
+		public string Message { get; set; }
 
-    }
+		public string ContactId { get; set; }
+
+		public ReminderItemStatus Status { get; set; }
+
+		public Exception AddingException { get; set; }
+
+		public AddingToStorageFailedEventArgs() { }
+
+		public AddingToStorageFailedEventArgs(ReminderItem item, Exception ex)
+		{
+			Id = item.Id;
+			Date = item.Date;
+			Message = item.Message;
+			ContactId = item.ContactId;
+			Status = item.Status;
+			AddingException = ex;
+		}
+	}
 }

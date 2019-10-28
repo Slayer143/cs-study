@@ -10,35 +10,42 @@ namespace lesson_22.DataStore
 	{
 		private static CitiesDataStore _citiesDataStore;
 
-		public List<City> Cities { get; }
+		public Dictionary<int, City> Cities { get; }
 
 		private CitiesDataStore()
 		{
-			Cities = new List<City>
+			Cities = new Dictionary<int, City>
 			{
-				new City
-                {
-					Id = 1,
-					Name = "New-York",
-					Description = "This is my favorite city",
-					NumberOfPointsOfInterest = 100
+				{
+					1,
+					new City
+					{
+						Id = 1,
+						Name = "New-York",
+						Description = "This is my favorite city",
+						NumberOfPointsOfInterest = 100
+					}
 				},
-				new City
-                {
-					Id = 2,
-					Name = "Amsterdam",
-					Description = "I ❤ Amster",
-					NumberOfPointsOfInterest = 99
+
+				{
+					1,
+					new City
+					{
+						Id = 2,
+						Name = "Amsterdam",
+						Description = "I ❤ Amster",
+						NumberOfPointsOfInterest = 99
+					}
 				}
 			};
-		}
-
-		public static CitiesDataStore GetInstance()
-		{
-			if (_citiesDataStore == null)
-				_citiesDataStore = new CitiesDataStore();
-
-			return _citiesDataStore;
-		}
 	}
+
+	public static CitiesDataStore GetInstance()
+	{
+		if (_citiesDataStore == null)
+			_citiesDataStore = new CitiesDataStore();
+
+		return _citiesDataStore;
+	}
+}
 }

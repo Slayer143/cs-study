@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace lesson_22.Models
+namespace lesson_22.DataStore
 {
     public class City
     {

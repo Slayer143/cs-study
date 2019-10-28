@@ -8,196 +8,214 @@ using MessageRecievedEventArgs = Reminder.Domain.Models.MessageRecievedEventArgs
 
 namespace Reminder.Domain
 {
-    public class ReminderDomain : IDisposable
-    {
-        internal IReminderStorage _storage;
-        internal IReminderReciever _reciever;
+	public class ReminderDomain : IDisposable
+	{
+		internal IReminderStorage _storage;
+		internal IReminderReciever _reciever;
 
-        internal TimeSpan _awaitingRemindersCheckingPeriod;
+		internal TimeSpan _awaitingRemindersCheckingPeriod;
 
-        internal TimeSpan _readyRemindersSendingPeriod;
+		internal TimeSpan _readyRemindersSendingPeriod;
 
-        internal Timer _awaitingRemindersCheckingTimer;
+		internal Timer _awaitingRemindersCheckingTimer;
 
-        internal Timer _readyRemindersSendingTimer;
+		internal Timer _readyRemindersSendingTimer;
 
-        public Action<ReminderItem> SendReminder { get; set; }
+		public Action<ReminderItem> SendReminder { get; set; }
 
-        public event EventHandler<SendingSucceededEventArgs> SendingSucceeded;
-        public event EventHandler<SendingFailedEventArgs> SendingFailed;
+		public event EventHandler<SendingSucceededEventArgs> SendingSucceeded;
+		public event EventHandler<SendingFailedEventArgs> SendingFailed;
 
-        public event EventHandler<MessageRecievedEventArgs> MessageRecieved;
-        public event EventHandler<MessageParsingSucceddedEventArgs> MessageParsingSuccedded;
-        public event EventHandler<MessageParsingFailedEventArgs> MessageParsingFailed;
+		public event EventHandler<MessageRecievedEventArgs> MessageRecieved;
 
-        public event EventHandler<AddingToStorageFailedEventArgs> AddingToStorageFailed;
-        public event EventHandler<AddingToStorageSucceddedEventArgs> AddingToStorageSucceeded;
+		public event EventHandler<MessageParsingSucceddedEventArgs> MessageParsingSuccedded;
+		public event EventHandler<MessageParsingFailedEventArgs> MessageParsingFailed;
 
-        public ReminderDomain(
-            IReminderStorage storage,
-            IReminderReciever reciever,
-            TimeSpan awaitingRemindersCheckingPeriod,
-            TimeSpan readyRemindersSendingPeriod)
-        {
-            _storage = storage;
-            _reciever = reciever;
-            _awaitingRemindersCheckingPeriod = awaitingRemindersCheckingPeriod;
-            _readyRemindersSendingPeriod = readyRemindersSendingPeriod;
+		public event EventHandler<AddingToStorageFailedEventArgs> AddingToStorageFailed;
+		public event EventHandler<AddingToStorageSucceddedEventArgs> AddingToStorageSucceeded;
 
-            _reciever.MessageRecieved += (s, e) =>
-            {
-                MessageRecieved?.Invoke(
-                    this,
-                    new MessageRecievedEventArgs
-                    {
-                        ContactId = e.ContactId,
-                        Message = e.Message
-                    });
+		public ReminderDomain(
+			IReminderStorage storage,
+			IReminderReciever reciever,
+			TimeSpan awaitingRemindersCheckingPeriod,
+			TimeSpan readyRemindersSendingPeriod)
+		{
+			_storage = storage;
+			_reciever = reciever;
+			_awaitingRemindersCheckingPeriod = awaitingRemindersCheckingPeriod;
+			_readyRemindersSendingPeriod = readyRemindersSendingPeriod;
 
-                ParsedMessage parsedMessage;
+			_reciever.MessageRecieved += RecieverMessageRecieved;
+		}
 
-                try
-                {
-                    parsedMessage = MessageParser.Parse(e.Message);
+		private void RecieverMessageRecieved(object sender, Reciever.Core.MessageRecievedEventArgs e)
+		{
+			MessageRecievedInvoke(e.ContactId, e.Message);
+			ParsedMessage parsedMessage;
 
-                    MessageParsingSuccedded?.Invoke(
-                        this,
-                        new MessageParsingSucceddedEventArgs
-                        {
-                            ContactId = e.ContactId,
-                            Date = parsedMessage.Date,
-                            Message = parsedMessage.Message
-                        });
-                }
-                catch (Exception ex)
-                {
-                    MessageParsingFailed?.Invoke(
-                        this,
-                        new MessageParsingFailedEventArgs
-                        {
-                            ContactId = e.ContactId,
-                            Message = e.Message,
-                            ParsingException = ex
-                        });
+			try
+			{
+				parsedMessage = MessageParser.Parse(e.Message);
+				MessageParsingSucceddedInvoke(e.ContactId, parsedMessage.Date, parsedMessage.Message);
 
-                    return;
-                }
 
-                var item = new ReminderItem(
-                        parsedMessage.Date,
-                        parsedMessage.Message,
-                        e.ContactId);
+			}
+			catch (Exception ex)
+			{
+				MessageParsingFailedInvoke(e.ContactId, e.Message, ex);
 
-                try
-                {
-                    storage.Add(item);
-                    AddingToStorageSucceeded?.Invoke(
-                        this,
-                        new AddingToStorageSucceddedEventArgs
-                        {
-                            ContactId = e.ContactId,
-                            Message = e.Message
-                        });
+				return;
+			}
 
-                }
-                catch (Exception ex)
-                {
-                    AddingToStorageFailed?.Invoke(
-                        this,
-                        new AddingToStorageFailedEventArgs
-                        {
-                            ContactId = e.ContactId,
-                            Message = e.Message,
-                            AddingException = ex
-                        });
-                }
-            };
-        }
+			var item = new ReminderItem(
+					parsedMessage.Date,
+					parsedMessage.Message,
+					e.ContactId);
 
-        public ReminderDomain(
-            IReminderStorage storage,
-            IReminderReciever receiver)
-            : this(storage, receiver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1))
-        {
-        }
+			try
+			{
+				_storage.Add(item);
+				AddingToStorageSucceddedInvoke(item);
+			}
+			catch (Exception ex)
+			{
+				AddingToStorageFailedInvoke(item, ex);
+			}
+		}
 
-        public void Run()
-        {
-            _awaitingRemindersCheckingTimer = new Timer(
-                CheckAwaitingReminders,
-                null,
-                TimeSpan.Zero,
-                _awaitingRemindersCheckingPeriod);
+		private void AddingToStorageFailedInvoke(ReminderItem item, Exception exception)
+		{
+			AddingToStorageFailed?.Invoke(
+						this,
+						new AddingToStorageFailedEventArgs(item, exception));
+		}
 
-            _readyRemindersSendingTimer = new Timer(
-                SendReadyReminders,
-                null,
-                TimeSpan.FromSeconds(1),
-                _readyRemindersSendingPeriod);
+		private void AddingToStorageSucceddedInvoke(ReminderItem item)
+		{
+			AddingToStorageSucceeded?.Invoke(
+						this,
+						new AddingToStorageSucceddedEventArgs(item));
+		}
 
-            _reciever.Run();
-        }
+		private void MessageParsingFailedInvoke(string contactId, string message, Exception exception)
+		{
+			MessageParsingFailed?.Invoke(
+			this,
+			new MessageParsingFailedEventArgs
+			{
+				ContactId = contactId,
+				Message = message,
+				ParsingException = exception
+			});
+		}
 
-        internal void CheckAwaitingReminders(object state)
-        {
-            // here will check storage for awaiting items 
-            // check each for it`s date
-            // if it is time to send, change the status to ready
+		private void MessageParsingSucceddedInvoke(string contactId, DateTimeOffset date, string message)
+		{
+			MessageParsingSuccedded?.Invoke(
+			this,
+			new MessageParsingSucceddedEventArgs
+			{
+				ContactId = contactId,
+				Date = date,
+				Message = message
+			});
+		}
 
-            var awaitingReminders = _storage.Get(ReminderItemStatus.Awaiting);
+		private void MessageRecievedInvoke(string contactId, string message)
+		{
+			MessageRecieved?.Invoke(
+				   this,
+				   new MessageRecievedEventArgs
+				   {
+					   ContactId = contactId,
+					   Message = message
+				   });
+		}
 
-            foreach (var awaitingReminder in awaitingReminders)
-            {
-                if (awaitingReminder.IsReadyToSend)
-                    _storage.Update(awaitingReminder.Id, ReminderItemStatus.Ready);
-            }
-        }
+		public ReminderDomain(
+			IReminderStorage storage,
+			IReminderReciever receiver)
+			: this(storage, receiver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1))
+		{
+		}
 
-        internal void SendReadyReminders(object state)
-        {
-            // find ready reminders
-            // try "send"
-            // if success update status to Sent
-            // else update status to Failed
-            var readyReminders = _storage.Get(ReminderItemStatus.Ready);
+		public void Run()
+		{
+			_awaitingRemindersCheckingTimer = new Timer(
+				CheckAwaitingReminders,
+				null,
+				TimeSpan.Zero,
+				_awaitingRemindersCheckingPeriod);
 
-            foreach (var readyReminder in readyReminders)
-            {
-                try
-                {
-                    // try "send"
-                    SendReminder(readyReminder);
+			_readyRemindersSendingTimer = new Timer(
+				SendReadyReminders,
+				null,
+				TimeSpan.FromSeconds(1),
+				_readyRemindersSendingPeriod);
 
-                    // update status to Sent
-                    _storage.Update(readyReminder.Id, ReminderItemStatus.Sent);
+			_reciever.Run();
+		}
 
-                    SendingSucceeded?.Invoke(
-                        this,
-                        new SendingSucceededEventArgs
-                        {
-                            SendingItem = readyReminder
-                        });
-                }   
-                catch (Exception e)
-                {
-                    // update status to Failed
-                    _storage.Update(readyReminder.Id, ReminderItemStatus.Failed);
+		internal void CheckAwaitingReminders(object state)
+		{
+			// here will check storage for awaiting items 
+			// check each for it`s date
+			// if it is time to send, change the status to ready
 
-                    SendingFailed?.Invoke(
-                        this,
-                        new SendingFailedEventArgs
-                        {
-                            SendingItem = readyReminder,
-                            SendingException = e
-                        });
-                }
-            }
-        }
+			var awaitingReminders = _storage.Get(ReminderItemStatus.Awaiting);
 
-        public void Dispose()
-        {
-            _awaitingRemindersCheckingTimer?.Dispose();
-            _readyRemindersSendingTimer?.Dispose();
-        }
-    }
+			foreach (var awaitingReminder in awaitingReminders)
+			{
+				if (awaitingReminder.IsReadyToSend)
+					_storage.Update(awaitingReminder.Id, ReminderItemStatus.Ready);
+			}
+		}
+
+		internal void SendReadyReminders(object state)
+		{
+			// find ready reminders
+			// try "send"
+			// if success update status to Sent
+			// else update status to Failed
+			var readyReminders = _storage.Get(ReminderItemStatus.Ready);
+
+			foreach (var readyReminder in readyReminders)
+			{
+				try
+				{
+					// try "send"
+					SendReminder(readyReminder);
+
+					// update status to Sent
+					_storage.Update(readyReminder.Id, ReminderItemStatus.Sent);
+
+					SendingSucceeded?.Invoke(
+						this,
+						new SendingSucceededEventArgs
+						{
+							SendingItem = readyReminder
+						});
+				}
+				catch (Exception e)
+				{
+					// update status to Failed
+					_storage.Update(readyReminder.Id, ReminderItemStatus.Failed);
+
+					SendingFailed?.Invoke(
+						this,
+						new SendingFailedEventArgs
+						{
+							SendingItem = readyReminder,
+							SendingException = e
+						});
+				}
+			}
+		}
+
+		public void Dispose()
+		{
+			_awaitingRemindersCheckingTimer?.Dispose();
+			_readyRemindersSendingTimer?.Dispose();
+		}
+	}
 }

@@ -9,6 +9,7 @@ using Reminder.Storage.Core;
 using Reminder.Storage.InMemory;
 using Reminder.Domain.Models;
 using MessageRecievedEventArgs = Reminder.Domain.Models.MessageRecievedEventArgs;
+using ColorChanging = Reminder.Domain.Models.ColorChanging;
 
 
 namespace Reminder.App
@@ -51,30 +52,56 @@ namespace Reminder.App
 
         private static void Domain_AddingToStorageFailed(object sender, AddingToStorageFailedEventArgs e)
         {
-            Console.WriteLine($"Message from contact ID = {e.ContactId} parsing failed. Text \"{e.Message}\"");
-        }
+			var colorChanger = new ColorChanging();
+
+			colorChanger.WriteRed(
+				$"Item Id = {e.Id}" +
+				$"for time = {e.Date}" +
+				$"sent by user = {e.ContactId}" +
+				$"with message = {e.Message}" +
+				$"in status = {e.Status} failed adding to the storage" +
+				$"with exception = {e.AddingException}.");
+		}
 
         private static void Domain_AddingToStorageSucceeded(object sender, AddingToStorageSucceddedEventArgs e)
         {
-            Console.WriteLine($"Item from contact Id = {e.ContactId} successfully parsed. Text = \"{e.Message}\"");
-        }
+			var colorChanger = new ColorChanging();
+
+			colorChanger.WriteGreen(
+				$"Item Id = {e.Id}" +
+				$"for time = {e.Date}" +
+				$"sent by user = {e.ContactId}" +
+				$"with message = {e.Message}" +
+				$"in status = {e.Status} successfully added to the storage.");
+		}
 
         private static void Domain_MessageParsingFailed(object sender, MessageParsingFailedEventArgs e)
         {
-            Console.WriteLine(
-                $"Message from contact ID = {e.ContactId} parsing failed. Text = \"{e.Message}\"");
+			var colorChanger = new ColorChanging();
+
+			colorChanger.WriteRed(
+				$"Sent by user = {e.ContactId}" +
+				$"with message = {e.Message}" +
+				$"in status = {e.ParsingException} failed parsing.");
         }
 
         private static void Domain_MessageParsingSuccedded(object sender, MessageParsingSucceddedEventArgs e)
         {
-            Console.WriteLine(
-                $"Message from contact ID = {e.ContactId} successfully parsed. Date = \"{e.Date}\" Text = \"{e.Message}\"");
+			var colorChanger = new ColorChanging();
+
+			colorChanger.WriteGreen(
+				$"Sent by user = {e.ContactId}" +
+				$"for time = {e.Date}" +
+				$"with message = {e.Message} succedded parsing.");
         }
 
         private static void Domain_MessageRecieved(object sender, MessageRecievedEventArgs e)
         {
-            Console.WriteLine(
-                $"Message from contact ID = {e.ContactId} received. Text = \"{e.Message}\"");
+			var colorChanger = new ColorChanging();
+
+			colorChanger.WriteOrchid(
+				$"Sent by user = {e.ContactId}" +
+				$"with message = {e.Message} recieved.");
         }
     }
 }

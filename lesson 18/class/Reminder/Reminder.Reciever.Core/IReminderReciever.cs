@@ -1,5 +1,4 @@
 ﻿using System;
-using Reminder.Reciever.Telegram;
 
 namespace Reminder.Reciever.Core
 {
