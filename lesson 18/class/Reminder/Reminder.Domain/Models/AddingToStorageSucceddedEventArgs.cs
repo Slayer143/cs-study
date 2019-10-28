@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Reminder.Reciever.Core
+namespace Reminder.Domain.Models
 {
-    public class MessageRecievedEventArgs
+    public class AddingToStorageSucceddedEventArgs
     {
-        public string ContactId { get; set; }
-
         public string Message { get; set; }
+
+        public string ContactId { get; set; }
     }
 }

@@ -1,7 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Reminder.Parser\Reminder.Parser.csproj" />
+    <ProjectReference Include="..\Reminder.Reciever.Core\Reminder.Reciever.Core.csproj" />
+  </ItemGroup>
 
 </Project>
