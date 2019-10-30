@@ -28,7 +28,7 @@ namespace lesson_22.DataStore
 				},
 
 				{
-					1,
+					2,
 					new City
 					{
 						Id = 2,

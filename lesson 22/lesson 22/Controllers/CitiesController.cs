@@ -44,6 +44,17 @@ namespace lesson_22.Controllers
 		[HttpPost("/api/cities/")]
 		public IActionResult AddCity([FromBody] CityCreateOrUpdateModel cityCreate)
 		{
+			//ModelState.AddModelError("Custom", "Something goes wrong");
+
+			if (cityCreate == null)
+				return BadRequest();
+
+			//if (cityCreate.Description == cityCreate.Name)
+			//	ModelState.AddModelError("Description", "Do not write same things in fields 'Name' and 'Description'");
+
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
 			var citiesDataStore = CitiesDataStore.GetInstance();
 
 			City newCity = cityCreate.ConvertToCity(citiesDataStore.Cities.Max(c => c.Key) + 1);
