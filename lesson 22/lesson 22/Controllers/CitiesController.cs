@@ -1,37 +1,63 @@
-﻿using lesson_22.DataStore;
-using lesson_22.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
+using lesson_22.CitiesDataStore.Core;
+using lesson_22.Models;
 
 namespace lesson_22.Controllers
 {
+	[Route("/api/cities/")]
 	public class CitiesController : Controller
 	{
-		[HttpGet("/api/cities")]
-		public IActionResult GetCities()
+		private ICitiesDataStore _citiesDataStore;
+		private ILogger<CitiesController> _logger;
+
+		public CitiesController(
+			ICitiesDataStore citiesDataStore,
+			ILogger<CitiesController> logger)
 		{
-			var citiesDataStore = CitiesDataStore.GetInstance();
-
-			var citiesGetModelList = citiesDataStore
-				.Cities
-				.Values
-				.Select(c => new CityGetModel(c))
-				.ToList();
-
-			return Ok(citiesGetModelList);
+			_citiesDataStore = citiesDataStore;
+			_logger = logger;
 		}
 
-		[HttpGet("/api/cities/{id}")]
+		[HttpGet]
+		public IActionResult GetCities()
+		{
+			_logger.LogInformation("Method GetCities() called");
+
+			try
+			{
+				var citiesGetModelList = _citiesDataStore
+					.Cities
+					.Values
+					.Select(c => new CityGetModel(c))
+					.ToList();
+
+				return Ok(citiesGetModelList);
+			}
+			catch(Exception e)
+			{
+				_logger.LogError(
+					e,
+					"Error in GetCities() method");
+
+				throw;
+			}
+		}
+
+		[HttpGet("{id}")]
 		public IActionResult GetCityModel(int id)
 		{
-			var citiesDataStore = CitiesDataStore.GetInstance();
+			if (id <= 0)
+				ModelState.AddModelError("id", "ID should be an integer value greater than 0");
 
-			if (citiesDataStore.Cities.ContainsKey(id))
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			if (_citiesDataStore.Cities.ContainsKey(id))
 			{
-				var city = citiesDataStore.Cities[id];
+				var city = _citiesDataStore.Cities[id];
 
 				if (city == null)
 					return NotFound();
@@ -41,7 +67,7 @@ namespace lesson_22.Controllers
 			return NotFound();
 		}
 
-		[HttpPost("/api/cities/")]
+		[HttpPost]
 		public IActionResult AddCity([FromBody] CityCreateOrUpdateModel cityCreate)
 		{
 			//ModelState.AddModelError("Custom", "Something goes wrong");
@@ -55,41 +81,51 @@ namespace lesson_22.Controllers
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
 
-			var citiesDataStore = CitiesDataStore.GetInstance();
+			int id = _citiesDataStore.Cities.Keys.Count == 0
+				? 1
+				: _citiesDataStore.Cities.Keys.Max() + 1;
 
-			City newCity = cityCreate.ConvertToCity(citiesDataStore.Cities.Max(c => c.Key) + 1);
-			citiesDataStore.Cities.Add(newCity.Id, newCity);
+			City newCity = cityCreate.ConvertToCity(id);
+			_citiesDataStore.Cities.Add(newCity.Id, newCity);
 
 			return CreatedAtRoute("/api/cities/", new { id = newCity.Id }, new CityGetModel(newCity));
 		}
 
-		[HttpDelete("/api/cities/{id}")]
+		[HttpDelete("{id}")]
 		public IActionResult DeleteCity(int id)
 		{
-			var citiesDataStore = CitiesDataStore.GetInstance();
+			if (id <= 0)
+				ModelState.AddModelError("id", "ID should be an integer value greater than 0");
 
-			if (citiesDataStore.Cities.ContainsKey(id))
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			if (_citiesDataStore.Cities.ContainsKey(id))
 			{
-				citiesDataStore.Cities.Remove(id);
+				_citiesDataStore.Cities.Remove(id);
 				return NoContent();
 			}
 			return NotFound();
 		}
 
-		[HttpPut("/api/cities/{id}")]
+		[HttpPut("{id}")]
 		public IActionResult ReplaceCity(int id, [FromBody] CityCreateOrUpdateModel cityUpdate)
 		{
-			var citiesDataStore = CitiesDataStore.GetInstance();
+			if (id <= 0)
+				ModelState.AddModelError("id", "ID should be an integer value greater than 0");
 
-			if (citiesDataStore.Cities.ContainsKey(id))
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			if (_citiesDataStore.Cities.ContainsKey(id))
 			{
-				citiesDataStore.Cities[id].Name = cityUpdate.Name;
-				citiesDataStore.Cities[id].Description = cityUpdate.Description;
-				citiesDataStore.Cities[id].NumberOfPointsOfInterest = cityUpdate.NumberOfPointsOfInterest;
+				_citiesDataStore.Cities[id].Name = cityUpdate.Name;
+				_citiesDataStore.Cities[id].Description = cityUpdate.Description;
+				_citiesDataStore.Cities[id].NumberOfPointsOfInterest = cityUpdate.NumberOfPointsOfInterest;
 
-				return Ok(new CityGetModel(citiesDataStore.Cities[id]));
+				return Ok(new CityGetModel(_citiesDataStore.Cities[id]));
 			}
-				return NotFound();
+			return NotFound();
 		}
 	}
 }

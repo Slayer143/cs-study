@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace lesson_22.CitiesDataStore.Core
 {
-    interface ICitiesModels
+	public interface ICitiesModels
     {
         string Name { get; set; }
 

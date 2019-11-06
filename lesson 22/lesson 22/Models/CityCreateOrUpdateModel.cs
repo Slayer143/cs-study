@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using lesson_22.DataStore;
+﻿using System.ComponentModel.DataAnnotations;
 using lesson_22.DataValidation;
 using lesson_22.CitiesDataStore.Core;
 
 namespace lesson_22.Models
 {
-    public class CityCreateOrUpdateModel : ICitiesModels
+	public class CityCreateOrUpdateModel : ICitiesModels
     {
 		[Required(ErrorMessage = "Field 'Name' is required field"), 
 		MaxLength(100)]

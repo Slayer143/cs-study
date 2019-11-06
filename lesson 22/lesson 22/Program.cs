@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
+
 
 namespace lesson_22
 {
@@ -14,11 +11,32 @@ namespace lesson_22
 	{
 		public static void Main(string[] args)
 		{
-			CreateWebHostBuilder(args).Build().Run();
+			var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+
+			try
+			{
+				logger.Debug("App start");
+				CreateWebHostBuilder(args).Build().Run();
+			}
+			catch (Exception exception)
+			{
+				logger.Error(exception, "Program stopped because of exception");
+				throw;
+			}
+			finally
+			{
+				NLog.LogManager.Shutdown();
+			}
 		}
 
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
 			WebHost.CreateDefaultBuilder(args)
-				.UseStartup<Startup>();
+				.UseStartup<Startup>()
+				.ConfigureLogging(logging =>
+				{
+					logging.ClearProviders();
+					logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+				})
+			.UseNLog();
 	}
 }
