@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using lesson_22.Models;
+using lesson_22.CitiesDataStore.Core;
 
 namespace lesson_22.DataStore
 {
-	public class CitiesDataStore
+    public class CitiesDataStore : ICitiesDataStore
 	{
 		private static CitiesDataStore _citiesDataStore;
 

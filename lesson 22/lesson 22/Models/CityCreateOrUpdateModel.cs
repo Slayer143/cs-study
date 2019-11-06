@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using lesson_22.DataStore;
 using lesson_22.DataValidation;
+using lesson_22.CitiesDataStore.Core;
 
 namespace lesson_22.Models
 {
-    public class CityCreateOrUpdateModel 
+    public class CityCreateOrUpdateModel : ICitiesModels
     {
 		[Required(ErrorMessage = "Field 'Name' is required field"), 
 		MaxLength(100)]
@@ -18,7 +19,8 @@ namespace lesson_22.Models
 		OtherAttribute("Name")]
         public string Description { get; set; }
 		
-		[Range(0, 100)]
+		[Range(0, 100),
+        IntegerValue("NumberOfPointsOfInterest")]
 		public int NumberOfPointsOfInterest { get; set; }
 
 		public City ConvertToCity(int id)

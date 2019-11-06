@@ -36,4 +36,32 @@ namespace lesson_22.DataValidation
 			return null;
 		}
 	}
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public class IntegerValue : ValidationAttribute
+    {
+        public string IsInt { get; }
+
+        public IntegerValue(string isInt)
+        {
+            if (isInt == null)
+                throw new ArgumentNullException("Other property");
+
+            IsInt = isInt;
+        }
+
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            PropertyInfo otherPropertyInfo = validationContext.ObjectType.GetProperty(IsInt);
+
+            if (otherPropertyInfo == null)
+                return new ValidationResult($"Can not find the property having name \"{IsInt}\"");
+
+            if (!(Equals(value.GetType(), typeof(int))))
+                return new ValidationResult($" {validationContext.DisplayName} 'Number of points of interest' field should be int value");
+
+            return null;
+        }
+
+    }
 }
