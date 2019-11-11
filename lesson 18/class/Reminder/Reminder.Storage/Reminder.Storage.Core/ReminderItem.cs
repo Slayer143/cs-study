@@ -19,7 +19,9 @@ namespace Reminder.Storage.Core
 		public TimeSpan TimeToAlarm => Date - DateTimeOffset.Now;
 
 		public ReminderItem(
-			DateTimeOffset date, string message, string contactId)
+			DateTimeOffset date, 
+			string message, 
+			string contactId)
 		{
 			Id = Guid.NewGuid();
 			Date = date;
