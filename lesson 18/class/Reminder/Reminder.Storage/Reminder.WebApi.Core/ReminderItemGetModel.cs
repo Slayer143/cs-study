@@ -5,33 +5,29 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Reminder.Storage.WebApi.Models
+namespace Reminder.Storage.WebApi.Core
 {
-	public class ReminderItemAddModel
+	public class ReminderItemGetModel
 	{
-		[Required]
+		public Guid Id { get; }
+
 		public DateTimeOffset Date { get; set; }
 
-		[Required,
-		MaxLength(300)]
 		public string Message { get; set; }
 
-		[Required,
-		MaxLength(50)]
 		public string ContactId { get; set; }
 
-		public ReminderItemAddModel() { }
+		public ReminderItemStatus Status { get; set; }
 
-		public ReminderItemAddModel(ReminderItem reminderItem)
+		public ReminderItemGetModel() { }
+
+		public ReminderItemGetModel(ReminderItem reminderItem)
 		{
 			Date = reminderItem.Date;
 			Message = reminderItem.Message;
 			ContactId = reminderItem.ContactId;
-		}
-
-		public ReminderItem ConvertToReminderItem()
-		{
-			return new ReminderItem(Date, Message, ContactId);
+			Id = reminderItem.Id;
+			Status = reminderItem.Status;
 		}
 	}
 }

@@ -6,7 +6,7 @@ using Reminder.Parser;
 using Reminder.Reciever.Telegram;
 using Reminder.Sender.Telegram;
 using Reminder.Storage.Core;
-using Reminder.Storage.InMemory;
+//using Reminder.Storage.;
 using Reminder.Domain.Models;
 using MessageRecievedEventArgs = Reminder.Domain.Models.MessageRecievedEventArgs;
 using ColorChanging = Reminder.Domain.Models.ColorChanging;
@@ -20,7 +20,8 @@ namespace Reminder.App
         {
             Console.WriteLine("Telegram Bot Application!");
 
-            var storage = new InMemoryReminderStorage();
+            var storage = new ReminderStorageWebApiClient(
+				"http://localhost:5000/api/reminders");
 
             IWebProxy proxy = new HttpToSocks5Proxy(
                 "proxy.golyakov.net", 

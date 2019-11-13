@@ -68,9 +68,11 @@ namespace Reminder.Domain
 			}
 
 			var item = new ReminderItem(
+					Guid.NewGuid(),
 					parsedMessage.Date,
 					parsedMessage.Message,
-					e.ContactId);
+					e.ContactId,
+					ReminderItemStatus.Awaiting);
 
 			try
 			{

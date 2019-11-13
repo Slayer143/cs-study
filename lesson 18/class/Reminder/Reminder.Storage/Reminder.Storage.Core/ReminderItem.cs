@@ -4,7 +4,7 @@ namespace Reminder.Storage.Core
 {
 	public class ReminderItem
 	{
-		public Guid Id { get; }
+		public Guid Id { get; set; }
 
 		public DateTimeOffset Date { get; set; }
 
@@ -19,15 +19,17 @@ namespace Reminder.Storage.Core
 		public TimeSpan TimeToAlarm => Date - DateTimeOffset.Now;
 
 		public ReminderItem(
+			Guid id,
 			DateTimeOffset date, 
 			string message, 
-			string contactId)
+			string contactId,
+			ReminderItemStatus status)
 		{
-			Id = Guid.NewGuid();
+			Id = id;
 			Date = date;
 			Message = message;
 			ContactId = contactId;
-			Status = ReminderItemStatus.Awaiting;
+			Status = status;
 		}
 	}
 }

@@ -10,7 +10,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Reminder.Storage.Core\Reminder.Storage.Core.csproj" />
+    <ProjectReference Include="..\Reminder.Parser\Reminder.Parser.csproj" />
+    <ProjectReference Include="..\Reminder.Reciever.Core\Reminder.Reciever.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Reminder.Storage.Core">
+      <HintPath>..\..\Reminder.Storage\Reminder.Storage.Core\bin\Debug\netstandard2.0\Reminder.Storage.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

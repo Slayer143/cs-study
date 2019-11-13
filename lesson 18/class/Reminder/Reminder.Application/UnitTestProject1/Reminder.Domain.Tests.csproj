@@ -16,7 +16,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Reminder.Domain\Reminder.Domain.csproj" />
-    <ProjectReference Include="..\Reminder.Storage.InMemory\Reminder.Storage.InMemory.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Reminder.Storage.InMemory">
+      <HintPath>..\..\Reminder.Storage\Reminder.Storage.InMemory\bin\Debug\netstandard2.0\Reminder.Storage.InMemory.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

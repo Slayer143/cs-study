@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Reminder.Storage.Core\Reminder.Storage.Core.csproj" />
     <ProjectReference Include="..\Reminder.Storage.InMemory\Reminder.Storage.InMemory.csproj" />
+    <ProjectReference Include="..\Reminder.WebApi.Core\Reminder.WebApi.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Reminder.Storage.Core;
-using Reminder.Storage.WebApi.Models;
+using Reminder.Storage.WebApi.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
