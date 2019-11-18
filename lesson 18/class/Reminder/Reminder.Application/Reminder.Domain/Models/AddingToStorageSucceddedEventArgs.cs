@@ -17,13 +17,18 @@ namespace Reminder.Domain.Models
 
 		public AddingToStorageSucceddedEventArgs() { }
 
-		public AddingToStorageSucceddedEventArgs(ReminderItem item)
+		public AddingToStorageSucceddedEventArgs(
+            Guid id,
+            DateTimeOffset date,
+            string message,
+            string contactId,
+            ReminderItemStatus status)
 		{
-			Id = item.Id;
-			Date = item.Date;
-			Message = item.Message;
-			ContactId = item.ContactId;
-			Status = item.Status;
+			Id = id;
+			Date = date;
+			Message = message;
+			ContactId = contactId;
+			Status = status;
 		}
 	}
 }

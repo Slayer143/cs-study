@@ -7,11 +7,12 @@
 
   <ItemGroup>
     <PackageReference Include="HttpToSocks5Proxy" Version="1.2.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Telegram.Bot" Version="15.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Reminder.Storage\Reminder.Storage.WebApi.Client\Reminder.Storage.WebApi.Client.csproj" />
     <ProjectReference Include="..\ClassLibrary1\Reminder.Sender.Telegram.csproj" />
     <ProjectReference Include="..\Reminder.Domain\Reminder.Domain.csproj" />
     <ProjectReference Include="..\Reminder.Parser\Reminder.Parser.csproj" />

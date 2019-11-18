@@ -13,7 +13,7 @@ namespace Reminder.Storage.WebApi.Client
 {
 	public class ReminderStorageWebApiClient : IReminderStorage
 	{
-		private string _baseWebApiUrl;
+		private readonly string _baseWebApiUrl;
 		private HttpClient _httpClient;
 
 		public ReminderStorageWebApiClient(string baseWebApiUrl)
@@ -22,24 +22,38 @@ namespace Reminder.Storage.WebApi.Client
 			_httpClient = HttpClientFactory.Create();
 		}
 
-		public void Add(ReminderItem reminderItem)
+		public Guid Add(
+            DateTimeOffset date,
+            string message,
+            string contactId,
+            ReminderItemStatus status)
 		{
-			var model = new ReminderItemAddModel(reminderItem);
+			var model = new ReminderItemAddModel
+            {
+                Date = date,
+                Message = message,
+                ContactId = contactId,
+                Status = status
+            };
 			string content = JsonConvert.SerializeObject(model);
 
 			// send request
-			HttpResponseMessage response = SendRequestBefore(
-				content,
+			HttpResponseMessage response = SendRequest(
+                _baseWebApiUrl,
 				"POST",
-				_baseWebApiUrl);
+                content);
 
-			// analyse response
-			SendRequestAfter(response, HttpStatusCode.Created);
+            // analyse response
+            ThrowExceptionIfStatusCodeIsOtherThan(response, HttpStatusCode.Created);
+
+            var body = response.Content.ReadAsStringAsync().Result;
+
+            return JsonConvert.DeserializeObject<ReminderItemGetModel>(body).Id;
 		}
 
 		public ReminderItem Get(Guid id)
 		{
-			HttpResponseMessage response = SendRequestBefore(
+			HttpResponseMessage response = SendRequest(
 				_baseWebApiUrl + $"/{id}",
 				"GET",
 				null);
@@ -47,7 +61,7 @@ namespace Reminder.Storage.WebApi.Client
 			if (response.StatusCode == HttpStatusCode.NotFound)
 				return null;
 
-			SendRequestAfter(
+            ThrowExceptionIfStatusCodeIsOtherThan(
 				response,
 				HttpStatusCode.OK);
 
@@ -64,12 +78,12 @@ namespace Reminder.Storage.WebApi.Client
 
 		public List<ReminderItem> Get(ReminderItemStatus status)
 		{
-			HttpResponseMessage response = SendRequestBefore(
-				_baseWebApiUrl + $"?[filter]{status}",
+			HttpResponseMessage response = SendRequest(
+				_baseWebApiUrl + $"?[filter]status={status}",
 				"GET",
 				null);
 
-			SendRequestAfter(
+            ThrowExceptionIfStatusCodeIsOtherThan(
 				response,
 				HttpStatusCode.OK);
 
@@ -94,19 +108,20 @@ namespace Reminder.Storage.WebApi.Client
 			string content = JsonConvert.SerializeObject(model);
 
 			// send request
-			HttpResponseMessage response = SendRequestBefore(
-				content,
+			HttpResponseMessage response = SendRequest(
+                _baseWebApiUrl + $"/{id}",
 				"PATCH",
-				_baseWebApiUrl + $"/{id}");
+                content);
 
-			// analyse response
-			SendRequestAfter(response, HttpStatusCode.NoContent);
+            // analyse response
+            ThrowExceptionIfStatusCodeIsOtherThan(response, HttpStatusCode.NoContent);
 		}
 
-		public HttpResponseMessage SendRequestBefore(
-			string content,
-			string httpMethodString,
-			string requestUri)
+		private HttpResponseMessage SendRequest(
+            string requestUri,
+            string httpMethodString,
+            string content
+			)
 		{
 			HttpMethod httpMethod = new HttpMethod(httpMethodString);
 
@@ -114,7 +129,7 @@ namespace Reminder.Storage.WebApi.Client
 				httpMethod,
 				requestUri);
 
-			request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("/*"));
+			request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
 
 			if (content != null)
 			{
@@ -127,7 +142,7 @@ namespace Reminder.Storage.WebApi.Client
 			return _httpClient.SendAsync(request).Result;
 		}
 
-		public void SendRequestAfter(
+		private static void ThrowExceptionIfStatusCodeIsOtherThan(
 			HttpResponseMessage response,
 			HttpStatusCode statusCode)
 		{

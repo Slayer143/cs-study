@@ -5,8 +5,6 @@ namespace Reminder.Domain.Models
 {
     public class AddingToStorageFailedEventArgs : EventArgs
     {
-		public Guid Id { get; set; }
-
 		public DateTimeOffset Date { get; set; }
 
 		public string Message { get; set; }
@@ -19,13 +17,17 @@ namespace Reminder.Domain.Models
 
 		public AddingToStorageFailedEventArgs() { }
 
-		public AddingToStorageFailedEventArgs(ReminderItem item, Exception ex)
+		public AddingToStorageFailedEventArgs(
+            DateTimeOffset date,
+            string message,
+            string contactId,
+            ReminderItemStatus status, 
+            Exception ex)
 		{
-			Id = item.Id;
-			Date = item.Date;
-			Message = item.Message;
-			ContactId = item.ContactId;
-			Status = item.Status;
+			Date = date;
+			Message = message;
+			ContactId = contactId;
+			Status = status;
 			AddingException = ex;
 		}
 	}

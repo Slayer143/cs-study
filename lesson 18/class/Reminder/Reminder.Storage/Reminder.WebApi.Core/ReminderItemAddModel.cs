@@ -20,18 +20,20 @@ namespace Reminder.Storage.WebApi.Core
 		MaxLength(50)]
 		public string ContactId { get; set; }
 
-		public ReminderItemAddModel() { }
+        public ReminderItemStatus Status { get; set; }
 
-		public ReminderItemAddModel(ReminderItem reminderItem)
-		{
-			Date = reminderItem.Date;
-			Message = reminderItem.Message;
-			ContactId = reminderItem.ContactId;
-		}
+		//public ReminderItemAddModel() { }
 
-		public ReminderItem ConvertToReminderItem()
-		{
-			return new ReminderItem(Guid.NewGuid(), Date, Message, ContactId, ReminderItemStatus.Awaiting);
-		}
+		//public ReminderItemAddModel(ReminderItem reminderItem)
+		//{
+		//	Date = reminderItem.Date;
+		//	Message = reminderItem.Message;
+		//	ContactId = reminderItem.ContactId;
+		//}
+
+		//public ReminderItem ConvertToReminderItem()
+		//{
+		//	return new ReminderItem(Guid.NewGuid(), Date, Message, ContactId, ReminderItemStatus.Awaiting);
+		//}
 	}
 }

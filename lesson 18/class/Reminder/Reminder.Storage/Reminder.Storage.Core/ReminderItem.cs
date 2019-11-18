@@ -18,7 +18,16 @@ namespace Reminder.Storage.Core
 
 		public TimeSpan TimeToAlarm => Date - DateTimeOffset.Now;
 
-		public ReminderItem(
+        public ReminderItem(
+            DateTimeOffset date,
+            string message,
+            string contactId,
+            ReminderItemStatus status) :
+            this(Guid.NewGuid(), date, message, contactId, status)
+        {
+        }
+
+        public ReminderItem(
 			Guid id,
 			DateTimeOffset date, 
 			string message, 

@@ -6,10 +6,10 @@ using Reminder.Parser;
 using Reminder.Reciever.Telegram;
 using Reminder.Sender.Telegram;
 using Reminder.Storage.Core;
-//using Reminder.Storage.;
 using Reminder.Domain.Models;
 using MessageRecievedEventArgs = Reminder.Domain.Models.MessageRecievedEventArgs;
 using ColorChanging = Reminder.Domain.Models.ColorChanging;
+using Reminder.Storage.WebApi.Client;
 
 
 namespace Reminder.App
@@ -56,7 +56,6 @@ namespace Reminder.App
 			var colorChanger = new ColorChanging();
 
 			colorChanger.WriteRed(
-				$"Item Id = {e.Id}" +
 				$"for time = {e.Date}" +
 				$"sent by user = {e.ContactId}" +
 				$"with message = {e.Message}" +

@@ -25,10 +25,22 @@ namespace Reminder.Storage.WebApi.Controllers
 			if (model == null || !ModelState.IsValid)
 				return BadRequest();
 
-			var reminder = model.ConvertToReminderItem();
-			_reminderStorage.Add(reminder);
+			Guid id = _reminderStorage.Add(
+                model.Date,
+                model.Message,
+                model.ContactId,
+                model.Status);
 
-			return Created($"/api/reminders/{reminder.Id}", new ReminderItemGetModel(reminder));
+			return Created(
+                $"/api/reminders/{id}",
+                new ReminderItemGetModel
+                {
+                    Id = id,
+                    Date = model.Date,
+                    Message = model.Message,
+                    ContactId = model.ContactId,
+                    Status = model.Status
+                });
 		}
 
 		[HttpGet("{id}")]

@@ -14,12 +14,24 @@ namespace Reminder.Storage.InMemory
             Reminders = new Dictionary<Guid, ReminderItem>();
         }
 
-		public void Add(ReminderItem reminderItem)
-		{
-			Reminders.Add(reminderItem.Id, reminderItem);
-		}
+        public Guid Add(
+            DateTimeOffset date, 
+            string message, 
+            string contactId, 
+            ReminderItemStatus status)
+        {
+            var reminderItem = new ReminderItem(
+                date, 
+                message, 
+                contactId, 
+                status);
 
-		public ReminderItem Get(Guid id)
+            Reminders.Add(reminderItem.Id, reminderItem);
+
+            return reminderItem.Id;
+        }
+
+        public ReminderItem Get(Guid id)
 		{
 			return Reminders.ContainsKey(id)
 				? Reminders[id]

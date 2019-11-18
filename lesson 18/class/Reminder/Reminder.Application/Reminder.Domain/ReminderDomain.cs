@@ -67,36 +67,62 @@ namespace Reminder.Domain
 				return;
 			}
 
-			var item = new ReminderItem(
-					Guid.NewGuid(),
-					parsedMessage.Date,
-					parsedMessage.Message,
-					e.ContactId,
-					ReminderItemStatus.Awaiting);
+            Guid id;
 
 			try
 			{
-				_storage.Add(item);
-				AddingToStorageSucceddedInvoke(item);
+				id = _storage.Add(
+                    parsedMessage.Date,
+                    parsedMessage.Message,
+                    e.ContactId,
+                    ReminderItemStatus.Awaiting);
+
+
+
+				AddingToStorageSucceddedInvoke(
+                    id, 
+                    parsedMessage.Date, 
+                    parsedMessage.Message,
+                    e.ContactId, 
+                    ReminderItemStatus.Awaiting);
 			}
 			catch (Exception ex)
 			{
-				AddingToStorageFailedInvoke(item, ex);
+				AddingToStorageFailedInvoke(
+                    parsedMessage.Date,
+                    parsedMessage.Message,
+                    e.ContactId,
+                    ReminderItemStatus.Awaiting, ex);
 			}
 		}
 
-		private void AddingToStorageFailedInvoke(ReminderItem item, Exception exception)
+		private void AddingToStorageFailedInvoke(
+                    DateTimeOffset date,
+                    string message,
+                    string contactId,
+                    ReminderItemStatus status,
+                    Exception exception)
 		{
 			AddingToStorageFailed?.Invoke(
 						this,
-						new AddingToStorageFailedEventArgs(item, exception));
+						new AddingToStorageFailedEventArgs(
+                            date, 
+                            message, 
+                            contactId, 
+                            status, 
+                            exception));
 		}
 
-		private void AddingToStorageSucceddedInvoke(ReminderItem item)
+		private void AddingToStorageSucceddedInvoke(
+            Guid id,
+            DateTimeOffset date,
+            string message,
+            string contactId,
+            ReminderItemStatus status)
 		{
 			AddingToStorageSucceeded?.Invoke(
 						this,
-						new AddingToStorageSucceddedEventArgs(item));
+						new AddingToStorageSucceddedEventArgs(id, date, message, contactId, status));
 		}
 
 		private void MessageParsingFailedInvoke(string contactId, string message, Exception exception)

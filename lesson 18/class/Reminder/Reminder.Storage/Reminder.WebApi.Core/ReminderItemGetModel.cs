@@ -9,7 +9,7 @@ namespace Reminder.Storage.WebApi.Core
 {
 	public class ReminderItemGetModel
 	{
-		public Guid Id { get; }
+		public Guid Id { get; set; }
 
 		public DateTimeOffset Date { get; set; }
 
@@ -19,15 +19,15 @@ namespace Reminder.Storage.WebApi.Core
 
 		public ReminderItemStatus Status { get; set; }
 
-		public ReminderItemGetModel() { }
+        public ReminderItemGetModel() { }
 
-		public ReminderItemGetModel(ReminderItem reminderItem)
-		{
-			Date = reminderItem.Date;
-			Message = reminderItem.Message;
-			ContactId = reminderItem.ContactId;
-			Id = reminderItem.Id;
-			Status = reminderItem.Status;
-		}
+        public ReminderItemGetModel(ReminderItem reminderItem)
+        {
+            Id = reminderItem.Id;
+            Date = reminderItem.Date;
+            Message = reminderItem.Message;
+            ContactId = reminderItem.ContactId;
+            Status = reminderItem.Status;
+        }
 	}
 }
