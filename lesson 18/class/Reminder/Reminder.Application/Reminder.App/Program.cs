@@ -2,7 +2,6 @@
 using System.Net;
 using MihaZupan;
 using Reminder.Domain;
-using Reminder.Parser;
 using Reminder.Reciever.Telegram;
 using Reminder.Sender.Telegram;
 using Reminder.Storage.Core;
@@ -23,11 +22,13 @@ namespace Reminder.App
             var storage = new ReminderStorageWebApiClient(
 				"http://localhost:5000/api/reminders");
 
-            IWebProxy proxy = new HttpToSocks5Proxy(
-                "proxy.golyakov.net", 
-                1080);
-
             string token = "979765455:AAE5XgfCXVA3C7LfRWF_VWy1NcCp28Z9R4I";
+
+            IWebProxy proxy = new HttpToSocks5Proxy(
+                "orbtl.s5.opennetwork.cc",
+                999,
+                "835403233",
+                "mhq3OugD");
 
             var reciever = new TelegramReminderReciever(token, proxy);
 
