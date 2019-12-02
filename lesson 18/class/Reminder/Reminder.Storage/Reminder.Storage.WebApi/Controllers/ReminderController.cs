@@ -4,11 +4,10 @@ using Reminder.Storage.WebApi.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Reminder.Storage.WebApi.Controllers
 {
-	[ApiController]
+    [ApiController]
 	[Route("/api/reminders")]
 	public class ReminderController : ControllerBase
 	{

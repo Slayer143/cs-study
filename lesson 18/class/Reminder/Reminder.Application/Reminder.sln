@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reminder.Parser", "Reminder
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reminder.App", "Reminder.App\Reminder.App.csproj", "{C9B79389-CD8D-47EC-945D-9250FB1D336F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDebug", "AppDebug\AppDebug.csproj", "{5F93BB82-BAB6-4215-98BA-A321A249890A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppDebug", "AppDebug\AppDebug.csproj", "{5F93BB82-BAB6-4215-98BA-A321A249890A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reminder.Storage.WebApi.Client", "..\Reminder.Storage\Reminder.Storage.WebApi.Client\Reminder.Storage.WebApi.Client.csproj", "{FBBC34DC-C7F5-4B64-AFD6-7024AEED2D6D}"
 EndProject

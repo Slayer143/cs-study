@@ -11,10 +11,7 @@
 
   <ItemGroup>
     <Reference Include="Reminder.Storage.Core">
-      <HintPath>..\..\Reminder.Storage\Reminder.Storage.Core\bin\Debug\netstandard2.0\Reminder.Storage.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Reminder.Storage.WebApi">
-      <HintPath>..\..\Reminder.Storage\Reminder.Storage.WebApi\bin\Debug\netcoreapp2.2\Reminder.Storage.WebApi.dll</HintPath>
+      <HintPath>..\..\Reminder.Storage\Reminder.Storage.Core\bin\Debug\netstandard2.1\Reminder.Storage.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 
