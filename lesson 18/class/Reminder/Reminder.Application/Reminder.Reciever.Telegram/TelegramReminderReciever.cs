@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Net;
 using Telegram.Bot;
-using Reminder.Reciever.Core;
+using Reminder.Receiever.Core;
 
-namespace Reminder.Reciever.Telegram
+namespace Reminder.Receiever.Telegram
 {
-    public class TelegramReminderReciever : IReminderReciever
+    public class TelegramReminderReciever : IReminderReceiever
     {
         private TelegramBotClient _botClient;
 
-        public event EventHandler<MessageRecievedEventArgs> MessageRecieved;
+        public event EventHandler<MessageReceivedEventArgs> MessageRecieved;
 
         public TelegramReminderReciever(string token, IWebProxy proxy)
         {
@@ -31,7 +31,7 @@ namespace Reminder.Reciever.Telegram
 
             MessageRecieved?.Invoke(
                 this,
-                new MessageRecievedEventArgs
+                new MessageReceivedEventArgs
                 {
                     ContactId = Convert.ToString(e.Message.Chat.Id),
                     Message = e.Message.Text

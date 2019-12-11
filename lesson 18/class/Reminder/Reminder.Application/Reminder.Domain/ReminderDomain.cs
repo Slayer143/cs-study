@@ -3,15 +3,15 @@ using System;
 using System.Threading;
 using Reminder.Domain.Models;
 using Reminder.Parser;
-using Reminder.Reciever.Core;
-using MessageRecievedEventArgs = Reminder.Domain.Models.MessageRecievedEventArgs;
+using Reminder.Receiever.Core;
+using MessageReceivedEventArgs = Reminder.Domain.Models.MessageReceivedEventArgs;
 
 namespace Reminder.Domain
 {
 	public class ReminderDomain : IDisposable
 	{
 		internal IReminderStorage _storage;
-		internal IReminderReciever _reciever;
+		internal IReminderReceiever _receiever;
 
 		internal TimeSpan _awaitingRemindersCheckingPeriod;
 
@@ -26,7 +26,7 @@ namespace Reminder.Domain
 		public event EventHandler<SendingSucceededEventArgs> SendingSucceeded;
 		public event EventHandler<SendingFailedEventArgs> SendingFailed;
 
-		public event EventHandler<MessageRecievedEventArgs> MessageRecieved;
+		public event EventHandler<MessageReceivedEventArgs> MessageReceieved;
 
 		public event EventHandler<MessageParsingSucceddedEventArgs> MessageParsingSuccedded;
 		public event EventHandler<MessageParsingFailedEventArgs> MessageParsingFailed;
@@ -36,21 +36,21 @@ namespace Reminder.Domain
 
 		public ReminderDomain(
 			IReminderStorage storage,
-			IReminderReciever reciever,
+			IReminderReceiever receiever,
 			TimeSpan awaitingRemindersCheckingPeriod,
 			TimeSpan readyRemindersSendingPeriod)
 		{
 			_storage = storage;
-			_reciever = reciever;
+			_receiever = receiever;
 			_awaitingRemindersCheckingPeriod = awaitingRemindersCheckingPeriod;
 			_readyRemindersSendingPeriod = readyRemindersSendingPeriod;
 
-			_reciever.MessageRecieved += RecieverMessageRecieved;
+			_receiever.MessageRecieved += ReceiverMessageReceieved;
 		}
 
-		private void RecieverMessageRecieved(object sender, Reciever.Core.MessageRecievedEventArgs e)
+		private void ReceiverMessageReceieved(object sender, Receiever.Core.MessageReceivedEventArgs e)
 		{
-			MessageRecievedInvoke(e.ContactId, e.Message);
+			MessageReceievedInvoke(e.ContactId, e.Message);
 			ParsedMessage parsedMessage;
 
 			try
@@ -149,11 +149,11 @@ namespace Reminder.Domain
 			});
 		}
 
-		private void MessageRecievedInvoke(string contactId, string message)
+		private void MessageReceievedInvoke(string contactId, string message)
 		{
-			MessageRecieved?.Invoke(
+			MessageReceieved?.Invoke(
 				   this,
-				   new MessageRecievedEventArgs
+				   new MessageReceivedEventArgs
 				   {
 					   ContactId = contactId,
 					   Message = message
@@ -162,7 +162,7 @@ namespace Reminder.Domain
 
 		public ReminderDomain(
 			IReminderStorage storage,
-			IReminderReciever receiver)
+			IReminderReceiever receiver)
 			: this(storage, receiver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1))
 		{
 		}
@@ -181,7 +181,7 @@ namespace Reminder.Domain
 				TimeSpan.FromSeconds(1),
 				_readyRemindersSendingPeriod);
 
-			_reciever.Run();
+			_receiever.Run();
 		}
 
 		internal void CheckAwaitingReminders(object state)

@@ -2,11 +2,11 @@
 using System.Net;
 using MihaZupan;
 using Reminder.Domain;
-using Reminder.Reciever.Telegram;
+using Reminder.Receiever.Telegram;
 using Reminder.Sender.Telegram;
 using Reminder.Storage.Core;
 using Reminder.Domain.Models;
-using MessageRecievedEventArgs = Reminder.Domain.Models.MessageRecievedEventArgs;
+using MessageReceivedEventArgs = Reminder.Domain.Models.MessageReceivedEventArgs;
 using ColorChanging = Reminder.Domain.Models.ColorChanging;
 using Reminder.Storage.WebApi.Client;
 
@@ -40,7 +40,7 @@ namespace Reminder.App
                 sender.Send(ri.ContactId, ri.Message);
             };
 
-            domain.MessageRecieved += Domain_MessageRecieved;
+            domain.MessageReceieved += Domain_MessageRecieved;
             domain.MessageParsingSuccedded += Domain_MessageParsingSuccedded;
             domain.MessageParsingFailed += Domain_MessageParsingFailed;
             domain.AddingToStorageSucceeded += Domain_AddingToStorageSucceeded;
@@ -96,7 +96,7 @@ namespace Reminder.App
 				$"with message = {e.Message} succedded parsing.");
         }
 
-        private static void Domain_MessageRecieved(object sender, MessageRecievedEventArgs e)
+        private static void Domain_MessageRecieved(object sender, MessageReceivedEventArgs e)
         {
 			var colorChanger = new ColorChanging();
 

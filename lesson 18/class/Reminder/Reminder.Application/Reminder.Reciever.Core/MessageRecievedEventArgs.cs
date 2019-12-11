@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Reminder.Reciever.Core
+﻿namespace Reminder.Receiever.Core
 {
-    public class MessageRecievedEventArgs
+    public class MessageReceivedEventArgs
     {
         public string ContactId { get; set; }
 

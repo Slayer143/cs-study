@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Reminder.Reciever.Core
+namespace Reminder.Receiever.Core
 {
-    public interface IReminderReciever
+    public interface IReminderReceiever
     {
         void Run();
 
-        event EventHandler<MessageRecievedEventArgs> MessageRecieved;
+        event EventHandler<MessageReceivedEventArgs> MessageRecieved;
     }
 }

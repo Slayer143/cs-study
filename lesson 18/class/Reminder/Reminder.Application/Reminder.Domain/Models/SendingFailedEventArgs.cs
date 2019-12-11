@@ -1,5 +1,4 @@
 ﻿using Reminder.Storage.Core;
-
 using System;
 
 namespace Reminder.Domain.Models
